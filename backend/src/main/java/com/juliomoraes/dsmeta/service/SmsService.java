@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.juliomoraes.dsmeta.entities.Sale;
 import com.juliomoraes.dsmeta.repository.SaleRepository;
+import com.juliomoraes.dsmeta.service.exceptions.SaleExceptionNotFound;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -30,7 +31,7 @@ public class SmsService {
 	
 	public void sendSms(Long saleId) {
 		
-		Sale sale = this.saleRepository.findById(saleId).orElseThrow(() -> new IllegalArgumentException("Venda não encontrada."));
+		Sale sale = this.saleRepository.findById(saleId).orElseThrow(() -> new SaleExceptionNotFound("Venda não encontrada."));
 		
 		String dateFormatMsg = sale.getDate().getMonthValue() + "/" + sale.getDate().getYear();
 				
