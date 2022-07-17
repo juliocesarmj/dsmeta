@@ -77,7 +77,10 @@ const SalesCard = () => {
                 <td>{sale.amount.toLocaleString('pt-br', coinFormat)}</td>
                 <td>
                   <div className="dsmeta-red-btn-container">
-                    <NotificationButton saleId={sale.id} />
+                    <NotificationButton
+                      saleId={sale.id}
+                      name={sale.sellerName}
+                    />
                   </div>
                 </td>
               </tr>
