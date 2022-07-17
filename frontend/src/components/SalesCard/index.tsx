@@ -22,10 +22,12 @@ const SalesCard = () => {
   };
 
   useEffect(() => {
+    const dateMin = minDate.toISOString().slice(0, 10);
+    const dateMax = maxDate.toISOString().slice(0, 10);
     axios
-      .get(`${BASE_URL}/sales/salesperdate`)
+      .get(`${BASE_URL}/sales/salesperdate?min=${dateMin}&max=${dateMax}`)
       .then(({ data }) => setSales(data.content));
-  }, []);
+  }, [minDate, maxDate]);
 
   return (
     <div className="dsmeta-card">
