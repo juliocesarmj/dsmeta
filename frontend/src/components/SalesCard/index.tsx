@@ -4,15 +4,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
-type Sale = {
-  id: number;
-  sellerName: string;
-  visited: number;
-  deals: number;
-  amount: number;
-  date: Date;
-};
+import { BASE_URL } from '../../utils/request';
+import { Sale } from '../../models/Sale';
 
 const SalesCard = () => {
   const min = new Date(new Date().setDate(new Date().getDate() - 365));
@@ -20,15 +13,18 @@ const SalesCard = () => {
   const [minDate, setMinDate] = useState(min);
   const [maxDate, setMaxDate] = useState(new Date());
 
-  const [dados, setDados] = useState<Sale[]>([]);
+  const [sales, setSales] = useState<Sale[]>([]);
+
+  const coinFormat = {
+    minimumFractionDigits: 2,
+    style: 'currency',
+    currency: 'BRL',
+  };
 
   useEffect(() => {
     axios
-      .get('https://dsmeta-juliomoraes.herokuapp.com/sales/salesperdate')
-      .then(({ data }) => {
-        // setDados(data);
-        console.log(data);
-      });
+      .get(`${BASE_URL}/sales/salesperdate`)
+      .then(({ data }) => setSales(data.content));
   }, []);
 
   return (
@@ -67,14 +63,16 @@ const SalesCard = () => {
             </tr>
           </thead>
           <tbody>
-            {dados.map((d) => (
-              <tr key={d.id}>
-                <td className="show992">{d.id}</td>
-                <td className="show576">{d.date.toDateString()}</td>
-                <td>{d.sellerName}</td>
-                <td className="show992">{d.visited}</td>
-                <td className="show992">{d.deals}</td>
-                <td>{d.amount}</td>
+            {sales.map((sale) => (
+              <tr key={sale.id}>
+                <td className="show992">{sale.id}</td>
+                <td className="show576">
+                  {new Date(sale.date).toLocaleDateString()}
+                </td>
+                <td>{sale.sellerName}</td>
+                <td className="show992">{sale.visited}</td>
+                <td className="show992">{sale.deals}</td>
+                <td>{sale.amount.toLocaleString('pt-br', coinFormat)}</td>
                 <td>
                   <div className="dsmeta-red-btn-container">
                     <NotificationButton />
