@@ -2,13 +2,34 @@ import NotificationButton from '../NotificationButton';
 import './styles.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+type Sale = {
+  id: number;
+  sellerName: string;
+  visited: number;
+  deals: number;
+  amount: number;
+  date: Date;
+};
 
 const SalesCard = () => {
   const min = new Date(new Date().setDate(new Date().getDate() - 365));
 
   const [minDate, setMinDate] = useState(min);
   const [maxDate, setMaxDate] = useState(new Date());
+
+  const [dados, setDados] = useState<Sale[]>([]);
+
+  useEffect(() => {
+    axios
+      .get('https://dsmeta-juliomoraes.herokuapp.com/sales/salesperdate')
+      .then(({ data }) => {
+        // setDados(data);
+        console.log(data);
+      });
+  }, []);
 
   return (
     <div className="dsmeta-card">
@@ -46,45 +67,21 @@ const SalesCard = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="show992">#341</td>
-              <td className="show576">08/07/2022</td>
-              <td>Anakin</td>
-              <td className="show992">15</td>
-              <td className="show992">11</td>
-              <td>R$ 55300.00</td>
-              <td>
-                <div className="dsmeta-red-btn-container">
-                  <NotificationButton />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td className="show992">#341</td>
-              <td className="show576">08/07/2022</td>
-              <td>Anakin</td>
-              <td className="show992">15</td>
-              <td className="show992">11</td>
-              <td>R$ 55300.00</td>
-              <td>
-                <div className="dsmeta-red-btn-container">
-                  <NotificationButton />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td className="show992">#341</td>
-              <td className="show576">08/07/2022</td>
-              <td>Anakin</td>
-              <td className="show992">15</td>
-              <td className="show992">11</td>
-              <td>R$ 55300.00</td>
-              <td>
-                <div className="dsmeta-red-btn-container">
-                  <NotificationButton />
-                </div>
-              </td>
-            </tr>
+            {dados.map((d) => (
+              <tr key={d.id}>
+                <td className="show992">{d.id}</td>
+                <td className="show576">{d.date.toDateString()}</td>
+                <td>{d.sellerName}</td>
+                <td className="show992">{d.visited}</td>
+                <td className="show992">{d.deals}</td>
+                <td>{d.amount}</td>
+                <td>
+                  <div className="dsmeta-red-btn-container">
+                    <NotificationButton />
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
